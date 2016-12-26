@@ -20,6 +20,11 @@ if (!ObjectID.isValid(id)){
 //   console.log('Todo', todo)
 // });
 
-Todo.findById(id).then((todo) => {
-  console.log('Todo by Id', todo)
-}).catch((e) => console.log(e));
+// Todo.findById(id).then((todo) => {
+//   console.log('Todo by Id', todo)
+// }).catch((e) => console.log(e));
+Todo.find({
+  $or: [{text:'Cook Dinner'}, {text:'Cook Lunch'}]
+}).then((todos) => {
+  console.log(todos);
+});
