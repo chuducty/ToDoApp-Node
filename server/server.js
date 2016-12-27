@@ -103,6 +103,18 @@ app.post('/todos/update', (req, res) => {
 
 });
 
+// app.get('/users/me', (req,res) => {
+//   var token = req.header('x-auth');
+//   User.findByToken(token).then((user) => {
+//     if (!user) {
+//       return Promise.reject();
+//     }
+//     res.send(user);
+//   }).catch((e) => {
+//     res.status(401).send();
+//   });
+// });
+
 // POst /Users
 app.post('/users', (req,res) => {
   var body = _.pick(req.body, ['email','password']);
@@ -121,22 +133,23 @@ app.post('/users', (req,res) => {
 });
 
 
-
-// app.get('/users/me', (req,res) => {
-//   var token = req.header('x-auth');
-//   User.findByToken(token).then((user) => {
-//     if (!user) {
-//       return Promise.reject();
-//     }
-//     res.send(user);
-//   }).catch((e) => {
-//     res.status(401).send();
-//   });
-// });
-
 app.get('/users/me', authenticate, (req,res) => {
   res.send(req.user);
 });
+
+//POST users/login
+app.post('/users/login', (req, res) => {
+  var body = _.pick(req.body, ['email', 'password']);
+  //res.send(user);
+  User.findByCredentials(body.email, body.password).then((user) => {
+    return user.generateAuthToken().then((token) => {
+      res.header('x-auth',token).send(user);
+    });
+  }).catch((e) => {
+    res.status(400).send();
+  });
+});
+
 
 app.listen(port,() => {
   console.log(`Server is ready on port ${port}`);
