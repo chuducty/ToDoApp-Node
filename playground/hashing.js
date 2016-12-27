@@ -12,4 +12,8 @@ var data = {
   id:4
 }
 var token = jwt.sign(data,'Secret salt');
+
 console.log(token.toString());
+
+var decoded = jwt.verify(token,'Secret salt');
+console.log(decoded);
