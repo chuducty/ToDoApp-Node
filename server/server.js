@@ -99,15 +99,25 @@ app.post('/todos/update', (req, res) => {
   }).catch((e) => {
     res.status(400).send();
   });
-  // var id = body._id;
-  // if (!ObjectID.isValid(id)){
-  //   res.status(404).send('Bad request :<');
-  //   return;
-  // }
 
-  //console.log(body);
 });
 
+// POst /Users
+app.post('/users', (req,res) => {
+  var body = _.pick(req.body, ['email','password']);
+  var user = new User(body);
+
+  user.save().then(() => {
+    // res.send(user);
+    // console.log(user._id.toHexString());
+    // console.log(user._id);
+    return user.generateAuthToken();
+  }).then((token) => {
+    res.header('x-auth',token).send(user);
+  }).catch((e) => {
+    res.status(400).send(e);
+  });
+});
 app.listen(port,() => {
   console.log(`Server is ready on port ${port}`);
 });
